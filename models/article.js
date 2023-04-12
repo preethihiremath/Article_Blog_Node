@@ -4,7 +4,7 @@ const slugify = require('slugify')
 const createDomPurify = require('dompurify')
 const { JSDOM } = require('jsdom')
 const dompurify = createDomPurify(new JSDOM().window)
-
+const commentSchema = require('./comment')
 const articleSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -29,7 +29,12 @@ const articleSchema = new mongoose.Schema({
   sanitizedHtml: {
     type: String,
     required: true
-  }
+  },
+  comments: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Comment'
+  }], // Embed comments as an array of Comment schema objects
+
 })
 
 articleSchema.pre('validate', function(next) {
@@ -40,7 +45,6 @@ articleSchema.pre('validate', function(next) {
   if (this.markdown) {
     this.sanitizedHtml = dompurify.sanitize(marked(this.markdown))
   }
-
   next()
 })
 
