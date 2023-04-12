@@ -3,6 +3,8 @@ const Article = require('./../models/article')
 const Comment = require('./../models/comment')
 const router = express.Router()
 
+
+
 router.get('/new', (req, res) => {
   res.render('articles/new', { article: new Article() })
 })
@@ -12,9 +14,10 @@ router.get('/edit/:id', async (req, res) => {
   res.render('articles/edit', { article: article })
 })
 
-router.get('/:slug', async (req, res) => {
+
+router.get('/:id', async (req, res) => {
   const articleId = req.params.id;
-  const article = await Article.findOne({ slug: req.params.slug });
+  const article = await Article.findOne({ _id: req.params.id });
   const comments = await Comment.find({ articleId });
   if (article == null) res.redirect('/')
   res.render('articles/show', { article : article, comments:comments })
@@ -53,7 +56,7 @@ function saveArticleAndRedirect(path) {
 }
 
 // Create a new comment
-router.post('/articles/:id/comments', async (req, res) => {
+router.post('/:id/comments', async (req, res) => {
   try {
     const articleId = req.params.id; // Get article ID from URL parameter
     const { author, content } = req.body; // Get comment data from request body
@@ -64,7 +67,12 @@ router.post('/articles/:id/comments', async (req, res) => {
       content
     });
     await comment.save();
-  //   res.redirect(`/articles/show`); // Redirect to the article page
+
+  const article = await Article.findOne({ _id: req.params.id });
+  const comments = await Comment.find({ articleId });
+  if (article == null) res.redirect('/')
+  res.render('articles/show', { article : article, comments:comments })
+   // Redirect to the article page
   } catch (err) {
     console.error(err);
     res.status(500).send('Error adding comment'); // Handle error
@@ -72,7 +80,7 @@ router.post('/articles/:id/comments', async (req, res) => {
 });
 
 // Get comments for a specific article
-router.get('/articles/:articleId/comments', (req, res) => {
+router.get('/:articleId/comments', (req, res) => {
 const articleId = req.params.articleId;
 Comment.find({ articleId })
   .then(comments => {

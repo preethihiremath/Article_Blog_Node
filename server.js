@@ -10,7 +10,7 @@ const Article = require('./models/article')
 const articleRouter = require('./routes/articles')
 const commentRouter = require('./routes/comments')
 
-app.use(bodyParser.json({ limit: '30mb', extended: true }))
+app.use(bodyParser.json({ limit: '30mb', extended: false }))
 app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }))
 app.use(cors());
 
@@ -21,7 +21,6 @@ app.use(methodOverride('_method'))
 
 app.get('/', async (req, res) => {
   const articles = await Article.find().sort({ createdAt: 'desc' })
-  
   res.render('articles/index', { articles: articles })
 })
 
