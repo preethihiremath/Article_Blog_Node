@@ -1,12 +1,12 @@
 # blog_node_ejs
-The project is a application of NodeJs in the beginning of the learning stage 
+The project is a application of NodeJs in the initial learning stage 
 
-# Tech Stack
+##Tech Stack
 Express
 MongoDB Atlas  
 EJX
 
-Description
+
 Iwritz is a blog page where user with following functionality
 
 1.Write an article
